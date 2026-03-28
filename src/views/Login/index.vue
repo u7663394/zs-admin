@@ -32,8 +32,8 @@ export default {
   data() {
     return {
       formData: {
-        username: "123",
-        password: "123",
+        username: "",
+        password: "Hmzs%001",
         checked: true,
       },
       rules: {
@@ -44,8 +44,13 @@ export default {
   },
   methods: {
     async login() {
+      // 1. 校验
       await this.$refs.form.validate();
-      console.log("pass");
+      // 2. 登陆
+      this.$store.dispatch("user/loginActions", {
+        username: this.formData.username,
+        password: this.formData.password,
+      });
     },
   },
 };

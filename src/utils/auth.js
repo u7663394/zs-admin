@@ -1,4 +1,4 @@
-// 专门用来操作cookie的方法包
+// 专门用来操作 cookie 的方法包
 // 内部封装了繁琐的操作方法 参数处理 暴露三个函数 get,set,remove
 import Cookies from 'js-cookie'
 import { TOKEN_KEY } from '@/constants/KEY'
