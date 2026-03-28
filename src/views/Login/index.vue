@@ -32,9 +32,9 @@ export default {
   data() {
     return {
       formData: {
-        username: "",
-        password: "Hmzs%001",
-        checked: true,
+        username: "", // "demo"
+        password: "", // "Hmzs%001"
+        checked: false,
       },
       rules: {
         username: [{ required: true, message: "请输入账号", trigger: "blur" }],
@@ -47,11 +47,21 @@ export default {
       // 1. 校验
       await this.$refs.form.validate();
       // 2. 登陆
-      this.$store.dispatch("user/loginActions", {
+      await this.$store.dispatch("user/loginActions", {
         username: this.formData.username,
         password: this.formData.password,
       });
+      // 3. 记忆功能
+      if (this.formData.checked) {
+        localStorage.setItem("user-Login-Info", JSON.stringify(this.formData));
+      } else {
+        localStorage.removeItem("user-Login-Info");
+      }
     },
+  },
+  created() {
+    const loginInfo = JSON.parse(localStorage.getItem("user-Login-Info"));
+    if (loginInfo) this.formData = loginInfo;
   },
 };
 </script>
