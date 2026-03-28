@@ -27,10 +27,11 @@ export default {
   methods: {
     // 退出登录
     logout() {
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-    }
-  }
-}
+      this.$store.commit("user/delTokens");
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -113,7 +114,7 @@ export default {
       .avatar-wrapper {
         margin-top: 5px;
         position: relative;
-        .name{
+        .name {
           font-weight: 600;
           cursor: pointer;
         }

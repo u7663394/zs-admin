@@ -57,6 +57,8 @@ export default {
       } else {
         localStorage.removeItem("user-Login-Info");
       }
+      // 4. 跳转
+      this.$router.push("/workbench");
     },
   },
   created() {
