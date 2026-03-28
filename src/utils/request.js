@@ -1,5 +1,7 @@
+import router from "@/router";
 import store from "@/store";
 import axios from "axios";
+import { Message } from "element-ui";
 
 const service = axios.create({
   baseURL: "https://api-hmzs.itheima.net/tj",
@@ -25,6 +27,14 @@ service.interceptors.response.use(
     return response.data;
   },
   (error) => {
+    // 统一处理错误
+    if (error.response) {
+      if (error.response.status === 401) {
+        router.push(`/login?redirect=${router.currentRoute.fullPath}`);
+        store.commit("user/delTokens");
+      }
+      Message.error(error.response.data.msg);
+    }
     return Promise.reject(error);
   }
 );

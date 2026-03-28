@@ -1,3 +1,149 @@
 <template>
-  <div>行车管理-月卡管理</div>
+  <div class="card-container">
+    <!-- 搜索区域 -->
+    <div class="search-container">
+      <span class="search-label">车牌号码：</span>
+      <el-input clearable placeholder="请输入内容" class="search-main" />
+      <span class="search-label">车主姓名：</span>
+      <el-input clearable placeholder="请输入内容" class="search-main" />
+      <span class="search-label">状态：</span>
+      <el-select :value="null">
+        <!-- label: 决定选项显示的内容
+             value：决定你选中某行后 value 的值会关联给 v-model 对应的属性（标记会随着 query 传给后台用来筛选不同状态的列表数据） -->
+        <el-option
+          v-for="item in []"
+          :key="item"
+          :label="item.text"
+          :value="item.value"
+        />
+      </el-select>
+      <el-button type="primary" class="search-btn">查询</el-button>
+    </div>
+    <!-- 新增删除操作区域 -->
+    <div class="create-container">
+      <el-button type="primary" @click="$router.push('/add-card')"
+        >添加月卡</el-button
+      >
+      <el-button>批量删除</el-button>
+    </div>
+    <!-- 表格区域 -->
+    <div class="table">
+      <el-table style="width: 100%" :data="tableData">
+        <el-table-column type="selection" width="55" />
+        <el-table-column type="index" label="序号" />
+        <el-table-column label="车主名称" prop="personName" />
+        <el-table-column label="联系方式" prop="phoneNumber" />
+        <el-table-column label="车牌号码" prop="carNumber" />
+        <el-table-column label="车辆品牌" prop="carBrand" />
+        <el-table-column label="剩余有效天数" prop="totalEffectiveDate" />
+        <el-table-column
+          label="状态"
+          prop="cardStatus"
+          :formatter="formatterFn"
+        />
+        <el-table-column label="操作" fixed="right" width="180">
+          <!-- scope 的值： { row: 一行数据对象 } -->
+          <template>
+            <el-button size="mini" type="text">续费</el-button>
+            <el-button size="mini" type="text">查看</el-button>
+            <el-button size="mini" type="text">编辑</el-button>
+            <!-- auth-btn 就是一个高阶组件：接收组件标签为参数的一个组件-->
+            <!-- 高阶组件好处：可以在组件内对传入的标签判断显示/隐藏 -->
+            <!-- <auth-btn btn-perm="parking:card:remove">
+              <el-button size="mini" type="text">删除</el-button>
+            </auth-btn> -->
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <!-- 分页 -->
+    <div class="page-container">
+      <el-pagination
+        layout="total, prev, pager, next, sizes"
+        :total="total"
+        :page-sizes="[2, 4, 6, 8, 10]"
+        :page-size="query.pageSize"
+        @current-change="currentChangeFn"
+        @size-change="sizeChangeFn"
+      />
+    </div>
+  </div>
 </template>
+
+<script>
+import { getCardListAPI } from "@/apis/car";
+
+export default {
+  data() {
+    return {
+      query: {
+        page: 1,
+        pageSize: 4,
+      },
+      tableData: [],
+      total: 0,
+    };
+  },
+  created() {
+    this.getList();
+  },
+  methods: {
+    // 获取列表数据
+    async getList() {
+      const res = await getCardListAPI(this.query);
+      this.tableData = res.data.rows;
+      this.total = res.data.total;
+    },
+    // 格式化状态列
+    formatterFn(row) {
+      return row.cardStatus === 0 ? "可用" : "已过期";
+    },
+    // 页码切换
+    currentChangeFn(newPage) {
+      this.query.page = newPage;
+      this.getList();
+    },
+    // 尺寸变化
+    sizeChangeFn(newSize) {
+      this.query.pageSize = newSize;
+      this.getList();
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.card-container {
+  padding: 20px;
+  background-color: #fff;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgb(237, 237, 237, 0.9);
+  padding-bottom: 20px;
+
+  .search-main {
+    width: 220px;
+    margin-right: 10px;
+  }
+
+  .search-btn {
+    margin-left: 20px;
+  }
+}
+
+.create-container {
+  margin: 10px 0px;
+}
+
+.page-container {
+  padding: 4px 0px;
+  text-align: right;
+}
+
+.form-container {
+  padding: 0px 80px;
+}
+</style>
