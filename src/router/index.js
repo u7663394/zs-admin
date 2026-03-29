@@ -9,6 +9,10 @@ import store from "@/store";
 
 export const routes = [
   {
+    path: "/add-card",
+    component: () => import("@/views/Car/CarCard/addCard.vue"),
+  },
+  {
     path: "/login",
     component: () => import("@/views/Login/index"),
     hidden: true,

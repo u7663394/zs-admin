@@ -52,11 +52,13 @@
           :formatter="formatterFn"
         />
         <el-table-column label="操作" fixed="right" width="180">
-          <!-- scope 的值： { row: 一行数据对象 } -->
-          <template>
+          <template #default="scope">
+            <!-- scope 的值： { row: 一行数据对象 } -->
             <el-button size="mini" type="text">续费</el-button>
             <el-button size="mini" type="text">查看</el-button>
-            <el-button size="mini" type="text">编辑</el-button>
+            <el-button size="mini" type="text" @click="edit(scope.row.id)"
+              >编辑</el-button
+            >
             <!-- auth-btn 就是一个高阶组件：接收组件标签为参数的一个组件-->
             <!-- 高阶组件好处：可以在组件内对传入的标签判断显示/隐藏 -->
             <!-- <auth-btn btn-perm="parking:card:remove">
@@ -139,6 +141,10 @@ export default {
     searchFn() {
       this.query.page = 1;
       this.getList();
+    },
+    // 编辑按钮
+    edit(id) {
+      this.$router.push(`/add-card?id=${id}`);
     },
   },
 };
