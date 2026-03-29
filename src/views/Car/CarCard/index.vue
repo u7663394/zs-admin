@@ -3,21 +3,31 @@
     <!-- 搜索区域 -->
     <div class="search-container">
       <span class="search-label">车牌号码：</span>
-      <el-input clearable placeholder="请输入内容" class="search-main" />
+      <el-input
+        clearable
+        placeholder="请输入内容"
+        class="search-main"
+        v-model="query.carNumber"
+      />
       <span class="search-label">车主姓名：</span>
-      <el-input clearable placeholder="请输入内容" class="search-main" />
+      <el-input
+        clearable
+        placeholder="请输入内容"
+        class="search-main"
+        v-model="query.personName"
+      />
       <span class="search-label">状态：</span>
-      <el-select :value="null">
-        <!-- label: 决定选项显示的内容
-             value：决定你选中某行后 value 的值会关联给 v-model 对应的属性（标记会随着 query 传给后台用来筛选不同状态的列表数据） -->
+      <el-select v-model="query.cardStatus">
         <el-option
-          v-for="item in []"
-          :key="item"
-          :label="item.text"
+          v-for="item in stateList"
+          :key="item.value"
+          :label="item.label"
           :value="item.value"
         />
       </el-select>
-      <el-button type="primary" class="search-btn">查询</el-button>
+      <el-button type="primary" class="search-btn" @click="searchFn"
+        >查询</el-button
+      >
     </div>
     <!-- 新增删除操作区域 -->
     <div class="create-container">
@@ -79,9 +89,26 @@ export default {
       query: {
         page: 1,
         pageSize: 4,
+        cardStatus: "", // 筛选状态
+        carNumber: "",
+        personName: "",
       },
       tableData: [],
       total: 0,
+      stateList: [
+        {
+          value: "",
+          label: "全部",
+        },
+        {
+          value: "0",
+          label: "可用",
+        },
+        {
+          value: "1",
+          label: "已过期",
+        },
+      ],
     };
   },
   created() {
@@ -106,6 +133,11 @@ export default {
     // 尺寸变化
     sizeChangeFn(newSize) {
       this.query.pageSize = newSize;
+      this.getList();
+    },
+    // 查询按钮
+    searchFn() {
+      this.query.page = 1;
       this.getList();
     },
   },
