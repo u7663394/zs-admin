@@ -34,11 +34,15 @@
       <el-button type="primary" @click="$router.push('/add-card')"
         >添加月卡</el-button
       >
-      <el-button>批量删除</el-button>
+      <el-button @click="dels">批量删除</el-button>
     </div>
     <!-- 表格区域 -->
     <div class="table">
-      <el-table style="width: 100%" :data="tableData">
+      <el-table
+        style="width: 100%"
+        :data="tableData"
+        @selection-change="handleSelectionChange"
+      >
         <el-table-column type="selection" width="55" />
         <el-table-column type="index" label="序号" />
         <el-table-column label="车主名称" prop="personName" />
@@ -61,9 +65,9 @@
             >
             <!-- auth-btn 就是一个高阶组件：接收组件标签为参数的一个组件-->
             <!-- 高阶组件好处：可以在组件内对传入的标签判断显示/隐藏 -->
-            <!-- <auth-btn btn-perm="parking:card:remove">
-              <el-button size="mini" type="text">删除</el-button>
-            </auth-btn> -->
+            <el-button size="mini" type="text" @click="del(scope.row.id)"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -83,7 +87,7 @@
 </template>
 
 <script>
-import { getCardListAPI } from "@/apis/car";
+import { delCardAPI, getCardListAPI } from "@/apis/car";
 
 export default {
   data() {
@@ -111,6 +115,7 @@ export default {
           label: "已过期",
         },
       ],
+      selectedCarList: [], // 已选行对象
     };
   },
   created() {
@@ -145,6 +150,27 @@ export default {
     // 编辑按钮
     edit(id) {
       this.$router.push(`/add-card?id=${id}`);
+    },
+    // 删除按钮
+    async del(id) {
+      await delCardAPI(id);
+      this.getList();
+    },
+    // 表格复选框变化
+    handleSelectionChange(value) {
+      // value 是选中行的对象数组
+      this.selectedCarList = value;
+    },
+    // 批量删除
+    async dels() {
+      // 1. 得到所有的 id
+      const idArr = this.selectedCarList.map((ele) => {
+        return ele.id;
+      });
+      // 2. 调删除接口
+      await delCardAPI(idArr.join(","));
+      // 3. 刷新列表
+      this.getList();
     },
   },
 };

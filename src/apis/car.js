@@ -33,3 +33,11 @@ export const getCardDetailAPI = (id) => {
     url: `/parking/card/detail/${id}`,
   });
 };
+
+// 5. 删除月卡
+export const delCardAPI = (id) => {
+  return request({
+    url: `/parking/card/${id}`,
+    method: "DELETE",
+  });
+};
