@@ -9,6 +9,10 @@ import store from "@/store";
 
 export const routes = [
   {
+    path: "/add-ep",
+    component: () => import("@/views/Park/Enterprise/add-ep.vue"),
+  },
+  {
     path: "/add-card",
     component: () => import("@/views/Car/CarCard/addCard.vue"),
   },

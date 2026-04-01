@@ -63,8 +63,6 @@
             <el-button size="mini" type="text" @click="edit(scope.row.id)"
               >编辑</el-button
             >
-            <!-- auth-btn 就是一个高阶组件：接收组件标签为参数的一个组件-->
-            <!-- 高阶组件好处：可以在组件内对传入的标签判断显示/隐藏 -->
             <el-button size="mini" type="text" @click="del(scope.row.id)"
               >删除</el-button
             >
