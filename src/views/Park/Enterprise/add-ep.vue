@@ -8,7 +8,7 @@
         <span>|</span>
         <span>添加企业</span>
       </div>
-      <div class="right">黑马程序员</div>
+      <div class="right">程序员</div>
     </header>
     <main class="add-main">
       <div class="form-container">
