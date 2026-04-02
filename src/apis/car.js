@@ -41,3 +41,11 @@ export const delCardAPI = (id) => {
     method: "DELETE",
   });
 };
+
+// 6. 获取规则列表
+export const getRuleListAPI = (params) => {
+  return request({
+    url: "/parking/rule/list",
+    params,
+  });
+};
