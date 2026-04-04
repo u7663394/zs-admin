@@ -9,6 +9,10 @@ import store from "@/store";
 
 export const routes = [
   {
+    path: "/add-role",
+    component: () => import("@/views/System/Role/add-role.vue"),
+  },
+  {
     path: "/ep-detail",
     component: () => import("@/views/Park/Enterprise/detail.vue"),
   },
