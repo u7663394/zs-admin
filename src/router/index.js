@@ -9,25 +9,9 @@ import store from "@/store";
 
 export const routes = [
   {
-    path: "/add-role",
-    component: () => import("@/views/System/Role/add-role.vue"),
-  },
-  {
-    path: "/ep-detail",
-    component: () => import("@/views/Park/Enterprise/detail.vue"),
-  },
-  {
-    path: "/add-ep",
-    component: () => import("@/views/Park/Enterprise/add-ep.vue"),
-  },
-  {
-    path: "/add-card",
-    component: () => import("@/views/Car/CarCard/addCard.vue"),
-  },
-  {
     path: "/login",
     component: () => import("@/views/Login/index"),
-    hidden: true,
+    hidden: false,
   },
   {
     path: "/",
@@ -41,10 +25,35 @@ export const routes = [
       {
         path: "",
         component: () => import("@/views/Workbench/index"),
+        // 路由元信息（给路由对象设置给多参数和值）
         meta: { title: "工作台", icon: "el-icon-data-board" },
       },
     ],
   },
+  {
+    // 行车管理-月卡管理-新增月卡
+    path: "/add-card",
+    component: () => import("@/views/Car/CarCard/addCard.vue"),
+  },
+  {
+    // 园区管理-企业管理-新增企业
+    path: "/add-ep",
+    component: () => import("@/views/Park/Enterprise/add-ep.vue"),
+  },
+  {
+    // 园区管理-企业管理-查看企业详情
+    path: "/ep-detail",
+    component: () => import("@/views/Park/Enterprise/detail.vue"),
+  },
+  {
+    // 系统管理-角色管理-新增角色
+    path: "/add-role",
+    component: () => import("@/views/System/Role/add-role.vue"),
+  },
+];
+
+// 动态路由表: RBAC 路由页面
+export const asyncRoutes = [
   {
     path: "/park",
     component: Layout,
@@ -65,7 +74,6 @@ export const routes = [
       },
     ],
   },
-
   {
     path: "/parking",
     component: Layout,
@@ -139,9 +147,20 @@ export const routes = [
     ],
   },
   {
-    path: "*",
-    component: () => import("@/views/404"),
-    hidden: true,
+    path: "/propety",
+    component: Layout,
+    permission: "property",
+    children: [
+      {
+        // 这里路径字符串为空，代表一级菜单无二级菜单
+        path: "",
+        name: "cost",
+        // 二级路由点，要挂载的组件
+        component: () => import("@/views/Propety/index"),
+        // 左侧路由上标题和图标
+        meta: { title: "物业费管理", icon: "el-icon-wallet" },
+      },
+    ],
   },
 ];
 
@@ -167,9 +186,27 @@ const whiteList = ["/login"];
 router.beforeEach(async (to, from, next) => {
   const token = store.state.user.token;
   if (token) {
+    // 第一次登陆时获取用户信息(权限列表)
     if (!store.state.user.profile.id) {
-      const permissions = await store.dispatch("user/getProfileActions");
-      console.log(permissions);
+      // 1. 一级权限列表
+      const newList = [];
+      const res = await store.dispatch("user/getProfileActions");
+      res.data.permissions.forEach((item) => {
+        newList.push(item.split(":")[0]);
+      });
+      // 1.1. 数组去重
+      const firstPerList = Array.from(new Set(newList));
+      // 2. 匹配筛选
+      const routeArr = asyncRoutes.filter((route) => {
+        if (firstPerList.includes("*")) return true;
+        return firstPerList.includes(route.permission);
+      });
+      // 3. 动态追加路由
+      routes.push(...routeArr);
+      store.commit("user/setUserRoutes", routes);
+      routeArr.forEach((item) => {
+        router.addRoute(item);
+      });
     }
     return next();
   }

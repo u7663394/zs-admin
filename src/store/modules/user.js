@@ -8,6 +8,7 @@ export default {
     return {
       token: getToken() || "",
       profile: {},
+      userRoutes: [], // RBAC 路由
     };
   },
   // 2. mutation 用于在 Vuex 中设置 token
@@ -22,6 +23,9 @@ export default {
     },
     setProfile(state, newProfile) {
       state.profile = newProfile;
+    },
+    setUserRoutes(state, newRoutes) {
+      state.userRoutes = newRoutes;
     },
   },
   // 3. action 用于在 Vuex 中发送请求拿 token，并调用 mutation 存 token
