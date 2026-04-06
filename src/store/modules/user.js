@@ -7,6 +7,7 @@ export default {
   state() {
     return {
       token: getToken() || "",
+      profile: {}
     };
   },
   // 2. mutation 用于在 Vuex 中设置 token
