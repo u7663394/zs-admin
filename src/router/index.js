@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Router from "vue-router";
-import { getProfileAPI } from "@/apis/user";
 
 Vue.use(Router);
 
@@ -168,11 +167,11 @@ const whiteList = ["/login"];
 router.beforeEach(async (to, from, next) => {
   const token = store.state.user.token;
   if (token) {
-    next();
     if (!store.state.user.profile.id) {
-      const permissions = await getProfileAPI();
+      const permissions = await store.dispatch("user/getProfileActions");
       console.log(permissions);
     }
+    return next();
   }
   if (whiteList.includes(to.path)) return next();
   return next("/login");
