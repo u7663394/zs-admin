@@ -23,12 +23,15 @@
 </template>
 
 <script>
+import { resetRouter } from "@/router";
+
 export default {
   methods: {
     // 退出登录
     logout() {
       this.$store.commit("user/delTokens");
       this.$store.commit("user/delProfile");
+      resetRouter();
       this.$router.push(`/login?redirect=${this.$route.fullPath}`);
     },
   },

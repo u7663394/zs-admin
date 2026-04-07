@@ -31,7 +31,10 @@
     </div>
     <!-- 新增删除操作区域 -->
     <div class="create-container">
-      <el-button type="primary" @click="$router.push('/add-card')"
+      <el-button
+        v-auth-dir="`parking:card:add_edit`"
+        type="primary"
+        @click="$router.push('/add-card')"
         >添加月卡</el-button
       >
       <el-button @click="dels">批量删除</el-button>
@@ -60,12 +63,18 @@
             <!-- scope 的值： { row: 一行数据对象 } -->
             <el-button size="mini" type="text">续费</el-button>
             <el-button size="mini" type="text">查看</el-button>
-            <el-button size="mini" type="text" @click="edit(scope.row.id)"
+            <el-button
+              v-auth-dir="`parking:card:add_edit`"
+              size="mini"
+              type="text"
+              @click="edit(scope.row.id)"
               >编辑</el-button
             >
-            <el-button size="mini" type="text" @click="del(scope.row.id)"
-              >删除</el-button
-            >
+            <auth-btn btn-perm="parking:card:remove">
+              <el-button size="mini" type="text" @click="del(scope.row.id)"
+                >删除</el-button
+              >
+            </auth-btn>
           </template>
         </el-table-column>
       </el-table>

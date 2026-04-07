@@ -11,6 +11,12 @@ import store from './store'
 
 import router from './router'
 
+import '@/directives' // 注册全局指令
+
+// 注册全局组件
+import AuthDir from './components/AuthDir.vue'
+Vue.component('AuthBtn', AuthDir)
+
 // 注册svg
 import '@/icons'
 
