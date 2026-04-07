@@ -24,6 +24,9 @@ export default {
     setProfile(state, newProfile) {
       state.profile = newProfile;
     },
+    delProfile(state) {
+      state.profile = {};
+    },
     setUserRoutes(state, newRoutes) {
       state.userRoutes = newRoutes;
     },

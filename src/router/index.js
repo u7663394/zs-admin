@@ -188,6 +188,7 @@ router.beforeEach(async (to, from, next) => {
   if (token) {
     // 第一次登陆时获取用户信息(权限列表)
     if (!store.state.user.profile.id) {
+      const userRoutes = [];
       // 1. 一级权限列表
       const newList = [];
       const res = await store.dispatch("user/getProfileActions");
@@ -202,8 +203,8 @@ router.beforeEach(async (to, from, next) => {
         return firstPerList.includes(route.permission);
       });
       // 3. 动态追加路由
-      routes.push(...routeArr);
-      store.commit("user/setUserRoutes", routes);
+      userRoutes.push(...routeArr);
+      store.commit("user/setUserRoutes", userRoutes);
       routeArr.forEach((item) => {
         router.addRoute(item);
       });
